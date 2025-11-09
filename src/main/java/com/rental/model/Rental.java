@@ -8,7 +8,7 @@ import java.util.Date;
 public class Rental {
     @Id
     String id;
-    String customerId;
+    Long customerId;
     String carId;
     int days;
     double totalCost;
@@ -16,7 +16,7 @@ public class Rental {
     Date startDate = new Date();
     
     public Rental() {}
-    public Rental(String id, String customerId, String carId, int days, double totalCost) {
+    public Rental(String id, Long customerId, String carId, int days, double totalCost) {
         this.id = id;
         this.customerId = customerId;
         this.carId = carId;
@@ -25,7 +25,7 @@ public class Rental {
     }
     
     public String getId() { return id; }
-    public String getCustomerId() { return customerId; }
+    public Long getCustomerId() { return customerId; }
     public String getCarId() { return carId; }
     public int getDays() { return days; }
     public double getTotalCost() { return totalCost; }

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Rental System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Login Screen */
+        .login-box {
+            background: white;
+            padding: 50px;
+            margin: 100px auto;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .login-box h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-shadow: none;
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+        
+        button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-logout {
+            background: #e74c3c;
+            float: right;
+            margin-bottom: 20px;
+        }
+        
+        .btn-logout:hover {
+            background: #c0392b;
+        }
+        
+        .btn-refresh {
+            background: #27ae60;
+        }
+        
+        .btn-refresh:hover {
+            background: #229954;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Car Grid */
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .car-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+        
+        .car-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .car-card-body {
+            padding: 20px;
+        }
+        
+        .car-model {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .car-id {
+            color: #7f8c8d;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        
+        .car-price {
+            color: #667eea;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-available {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-rented {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Rental Card */
+        .rental-card {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+        }
+        
+        .rental-id {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        .rental-details {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        /* Messages */
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        
+        .message-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        /* Form Group */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .form-actions {
+            margin-top: 20px;
+        }
+        
+        .form-actions button {
+            width: 100%;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .car-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .login-box {
+                padding: 30px;
+                margin: 50px auto;
+            }
+        }
+    </style>
+</head>
+<body onload="checkLogin">
+    
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-box">
+        <h1>🚗 Car Rental</h1>
+        <div class="form-group">
+            <input type="text" id="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <input type="password" id="password" placeholder="Password">
+        </div>
+        <button onclick="login()" style="width: 100%;">Login</button>
+        <div id="loginMsg" style="margin-top: 15px; text-align: center;"></div>
+    </div>
+    
+    <!-- User Dashboard -->
+    <div id="userDashboard" style="display: none;">
+        <div class="container">
+            <h1>🚗 Customer Dashboard</h1>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+            <div style="clear: both;"></div>
+            
+            <div class="dashboard-grid">
+                <!-- Book Car -->
+                <div class="card">
+                    <h2>📅 Book a Car</h2>
+                    <div class="form-group">
+                        <label>Customer ID (number)</label>
+                        <input disabled type="number" id="userCustId" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>Car ID</label>
+                        <input type="text" id="userCarId" placeholder="Enter car ID">
+                    </div>
+                    <div class="form-group">
+                        <label>Rental Days</label>
+                        <input type="number" id="userDays" placeholder="Number of days" min="1">
+                    </div>
+                    <div class="form-actions">
+                        <button onclick="userBookCar()">Book Now</button>
+                    </div>
+                    <div id="userBookMsg" style="margin-top: 15px;"></div>
+                </div>
+                
+                <!-- Release Car -->
+                <div class="card">
+                    <h2>🔓 Release Car</h2>
+                    <div class="form-group">
+                        <label>Rental ID</label>
+                        <input type="text" id="userReleaseRentalId" placeholder="Enter rental ID">
+                    </div>
+                    <div class="form-actions">
+                        <button onclick="userReleaseCar()">Release Vehicle</button>
+                    </div>
+                    <div id="userReleaseMsg" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+            
+            <!-- Available Cars -->
+            <div class="card full-width" style="margin-top: 20px;">
+                <h2>🚙 Available Cars</h2>
+                <button class="btn-refresh" onclick="loadCars()">Refresh List</button>
+                <div id="carsList" class="car-grid"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" style="display: none;">
+        <div class="container">
+            <h1>⚙️ Admin Dashboard</h1>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+            <div style="clear: both;"></div>
+            
+            <div class="dashboard-grid">
+                <!-- Add Car -->
+                <div class="card">
+                    <h2>➕ Add New Car</h2>
+                    <div class="form-group">
+                        <label>Car ID</label>
+                        <input type="text" id="carId" placeholder="e.g., C1">
+                    </div>
+                    <div class="form-group">
+                        <label>Model Name</label>
+                        <input type="text" id="carModel" placeholder="e.g., Toyota Fortuner">
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Rate (₹)</label>
+                        <input type="number" id="carRate" placeholder="e.g., 5000">
+                    </div>
+                    <div class="form-group">
+                        <label>Car Image</label>
+                        <input type="file" id="carImage" accept="image/*">
+                    </div>
+                    <div class="form-actions">
+                        <button onclick="addCar()">Add Car</button>
+                    </div>
+                    <div id="carMsg" style="margin-top: 15px;"></div>
+                </div>
+                
+                <!-- Add Customer -->
+                <div class="card">
+                    <h2>👤 Add Customer</h2>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="custName" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="custPhone" placeholder="Enter phone">
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="custUsername" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="custPassword" placeholder="Enter password">
+                    </div>
+                    <div class="form-actions">
+                        <button onclick="addCustomer()">Add Customer</button>
+                    </div>
+                    <div id="custMsg" style="margin-top: 15px;"></div>
+                </div>
+                
+                <!-- Return Car -->
+                <div class="card">
+                    <h2>🔙 Return Car</h2>
+                    <div class="form-group">
+                        <label>Rental ID</label>
+                        <input type="text" id="returnRentalId" placeholder="Enter rental ID">
+                    </div>
+                    <div class="form-actions">
+                        <button onclick="returnCar()">Complete Return</button>
+                    </div>
+                    <div id="returnMsg" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+            
+            <!-- Available Cars -->
+            <div class="card full-width" style="margin-top: 20px;">
+                <h2>🚙 Car Inventory</h2>
+                <button class="btn-refresh" onclick="loadCars()">Refresh</button>
+                <div id="adminCarsList" class="car-grid"></div>
+            </div>
+            
+            <!-- Active Rentals -->
+            <div class="card full-width" style="margin-top: 20px;">
+                <h2>📋 Active Rentals</h2>
+                <button class="btn-refresh" onclick="loadRentals()">Refresh</button>
+                <div id="rentalsList" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API = 'http://localhost:8080/api';
+        let currentUser = null;
+        
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch(`${API}/login?username=${username}&password=${password}`, {method: 'POST'});
+                const data = await res.json();
+                
+                if (!data.success) {
+                    showMessage('loginMsg', '✗ ' + data.message, 'error');
+                    return;
+                }
+                
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userRole', data.role);
+                
+                if (data.role === 'admin') {
+                    currentUser = 'admin';
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('adminDashboard').style.display = 'block';
+                    loadCars();
+                    loadRentals();
+                } else {
+                    currentUser = data.customerId;
+                    localStorage.setItem('customerId', data.customerId);
+                    localStorage.setItem('customerName', data.name);
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('userDashboard').style.display = 'block';
+                    document.getElementById('userCustId').value = data.customerId;
+                    setTimeout(() => {
+                        document.getElementById('userCustId').value = data.customerId;
+                        }, 100);
+                    // Auto-fill customer ID
+                    loadCars();
+                }
+            } catch (err) {
+                showMessage('loginMsg', '✗ Login failed: ' + err.message, 'error');
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userRole');
+            currentUser = null;
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('userDashboard').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        function checkLogin() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                const role = localStorage.getItem('userRole');
+                currentUser = role === 'admin' ? 'admin' : 'user';
+                document.getElementById('loginScreen').style.display = 'none';
+                if (role === 'admin') {
+                    document.getElementById('adminDashboard').style.display = 'block';
+                    loadCars();
+                    loadRentals();
+                } else {
+                    document.getElementById('userDashboard').style.display = 'block';
+                    //setTimeout(() => {
+                        document.getElementById('userCustId').value = localStorage.getItem('customerId');
+                        console.log('1',document.getElementById('userCustId').value,'2',localStorage.getItem('customerId'))
+                     //   }, 100);
+                    loadCars();
+                }
+            }
+        }
+        
+        function showMessage(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.className = 'message message-' + type;
+            el.innerHTML = message;
+        }
+        
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+        
+        async function addCar() {
+            const id = document.getElementById('carId').value;
+            const model = document.getElementById('carModel').value;
+            const rate = document.getElementById('carRate').value;
+            const imageFile = document.getElementById('carImage').files[0];
+            
+            try {
+                let imageBase64 = '';
+                if (imageFile) {
+                    imageBase64 = await getBase64(imageFile);
+                }
+                
+                const res = await fetch(`${API}/cars`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id, model, dailyRate: rate, image: imageBase64})
+                });
+                
+                const data = await res.json();
+                showMessage('carMsg', '✓ Car added successfully!', 'success');
+                document.getElementById('carId').value = '';
+                document.getElementById('carModel').value = '';
+                document.getElementById('carRate').value = '';
+                document.getElementById('carImage').value = '';
+                loadCars();
+            } catch (err) {
+                showMessage('carMsg', '✗ Error: ' + err.message, 'error');
+            }
+        }
+        
+        async function addCustomer() {
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const username = document.getElementById('custUsername').value;
+            const password = document.getElementById('custPassword').value;
+            
+            try {
+                const res = await fetch(`${API}/customers?name=${encodeURIComponent(name)}&phone=${phone}&username=${username}&password=${password}`, {method: 'POST'});
+                const data = await res.json();
+                showMessage('custMsg', `✓ Customer added!<br>Customer ID: <strong>${data.id}</strong><br>Username: <strong>${data.username}</strong>`, 'success');
+                document.getElementById('custName').value = '';
+                document.getElementById('custPhone').value = '';
+                document.getElementById('custUsername').value = '';
+                document.getElementById('custPassword').value = '';
+            } catch (err) {
+                showMessage('custMsg', '✗ Error: ' + err.message, 'error');
+            }
+        }
+        
+        async function returnCar() {
+            const rentalId = document.getElementById('returnRentalId').value;
+            
+            try {
+                const res = await fetch(`${API}/rentals/${rentalId}`, {method: 'DELETE'});
+                const data = await res.json();
+                if (data.error) {
+                    showMessage('returnMsg', '✗ ' + data.error, 'error');
+                } else {
+                    showMessage('returnMsg', `✓ Car returned! Amount: ₹${data.cost}`, 'success');
+                    document.getElementById('returnRentalId').value = '';
+                    loadRentals();
+                    loadCars();
+                }
+            } catch (err) {
+                showMessage('returnMsg', '✗ Error: ' + err.message, 'error');
+            }
+        }
+        
+        async function loadCars() {
+            try {
+                const res = await fetch(`${API}/cars`);
+                const cars = await res.json();
+                let html = '';
+                cars.forEach(car => {
+                    const imgSrc = car.image || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="280" height="200"%3E%3Crect fill="%23e0e0e0" width="280" height="200"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" dy=".3em" fill="%23999" font-size="16"%3ENo Image%3C/text%3E%3C/svg%3E';
+                    
+                    html += `
+                        <div class="car-card">
+                            <img src="${imgSrc}" alt="${car.model}"/>
+                            <div class="car-card-body">
+                                <div class="car-model">${car.model}</div>
+                                <div class="car-id">ID: ${car.id}</div>
+                                <div class="car-price">₹${car.dailyRate}/day</div>
+                                <span class="badge ${car.available ? 'badge-available' : 'badge-rented'}">
+                                    ${car.available ? '✓ Available' : '✗ Rented'}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                });
+                const targetId = currentUser === 'admin' ? 'adminCarsList' : 'carsList';
+                document.getElementById(targetId).innerHTML = html || '<p style="text-align: center; color: #7f8c8d;">No cars available</p>';
+            } catch (err) {
+                const targetId = currentUser === 'admin' ? 'adminCarsList' : 'carsList';
+                document.getElementById(targetId).innerHTML = '<p style="color: red;">Error loading cars</p>';
+            }
+        }
+        
+        async function loadRentals() {
+            try {
+                const res = await fetch(`${API}/rentals`);
+                const rentals = await res.json();
+                let html = '';
+                rentals.forEach(rental => {
+                    html += `
+                        <div class="rental-card">
+                            <div class="rental-id">🎫 Rental ${rental.id}</div>
+                            <div class="rental-details">
+                                👤 Customer: ${rental.customerId} | 🚗 Car: ${rental.carId}<br>
+                                📅 Days: ${rental.days} | 💰 Cost: ₹${rental.totalCost}
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('rentalsList').innerHTML = html || '<p style="text-align: center; color: #7f8c8d;">No active rentals</p>';
+            } catch (err) {
+                document.getElementById('rentalsList').innerHTML = '<p style="color: red;">Error loading rentals</p>';
+            }
+        }
+        
+        async function userBookCar() {
+            const custId = document.getElementById('userCustId').value;
+            const carId = document.getElementById('userCarId').value;
+            const days = document.getElementById('userDays').value;
+            
+            try {
+                const res = await fetch(`${API}/rentals?customerId=${custId}&carId=${carId}&days=${days}`, {method: 'POST'});
+                const data = await res.json();
+                if (data.error) {
+                    showMessage('userBookMsg', '✗ ' + data.error, 'error');
+                } else {
+                    showMessage('userBookMsg', `✓ Booked! Rental ID: ${data.rentalId}<br>Total Cost: ₹${data.totalCost}`, 'success');
+                    document.getElementById('userCustId').value = '';
+                    document.getElementById('userCarId').value = '';
+                    document.getElementById('userDays').value = '';
+                    loadCars();
+                }
+            } catch (err) {
+                showMessage('userBookMsg', '✗ Error: ' + err.message, 'error');
+            }
+        }
+        
+        async function userReleaseCar() {
+            const rentalId = document.getElementById('userReleaseRentalId').value;
+            
+            try {
+                const res = await fetch(`${API}/rentals/${rentalId}`, {method: 'DELETE'});
+                const data = await res.json();
+                if (data.error) {
+                    showMessage('userReleaseMsg', '✗ ' + data.error, 'error');
+                } else {
+                    showMessage('userReleaseMsg', `✓ Released! Amount: ₹${data.cost}`, 'success');
+                    document.getElementById('userReleaseRentalId').value = '';
+                    loadCars();
+                }
+            } catch (err) {
+                showMessage('userReleaseMsg', '✗ Error: ' + err.message, 'error');
+            }
+        }
+        
+        window.onload = checkLogin;
+    </script>
+</body>
+</html>

@@ -10,7 +10,8 @@ public class Car {
     String model;
     double dailyRate;
     boolean available = true;
-    
+    @Column(length = 1000000) // Large column for Base64 image
+    String image; // Base64 encoded image
     public Car() {}
     public Car(String id, String model, double dailyRate) {
         this.id = id;
@@ -23,4 +24,6 @@ public class Car {
     public double getDailyRate() { return dailyRate; }
     public boolean isAvailable() { return available; }
     public void setAvailable(boolean available) { this.available = available; }
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 }

@@ -19,14 +19,63 @@ public class RentalController {
     
     private int rentalCounter = 1;
     
+    // Login endpoint
+    @PostMapping("/login")
+    public Map<String, Object> login(@RequestParam String username, @RequestParam String password) {
+        Map<String, Object> response = new HashMap<>();
+        
+        // Check for admin
+        if (username.equals("admin") && password.equals("password")) {
+            response.put("success", true);
+            response.put("role", "admin");
+            response.put("message", "Admin login successful");
+            return response;
+        }
+        
+        // Check for customer
+        Optional<Customer> customer = custRepo.findByUsernameAndPassword(username, password);
+        if (customer.isPresent()) {
+            response.put("success", true);
+            response.put("role", "customer");
+            response.put("customerId", customer.get().getId());
+            response.put("name", customer.get().getName());
+            response.put("message", "Customer login successful");
+            return response;
+        }
+        
+        response.put("success", false);
+        response.put("message", "Invalid credentials");
+        return response;
+    }
+    
+    // Update customer endpoint
+    @PostMapping("/customers")
+        public Customer addCustomer(@RequestParam String name, 
+                                    @RequestParam String phone,
+                                    @RequestParam String username,
+                                    @RequestParam String password) {
+            Customer customer = new Customer(name, phone, username, password);
+            return custRepo.save(customer);
+        }
+        
+        // ... rest of your existing methods (getCars, rentCar, etc.)
     @GetMapping("/cars")
     public List<Car> getAvailableCars() {
         return carRepo.findAll().stream().filter(Car::isAvailable).toList();
     }
     
     @PostMapping("/cars")
-    public Car addCar(@RequestParam String id, @RequestParam String model, @RequestParam double dailyRate) {
-        return carRepo.save(new Car(id, model, dailyRate));
+    public Car addCar(@RequestBody Map<String, String> carData) {
+        String id = carData.get("id");
+        String model = carData.get("model");
+        double dailyRate = Double.parseDouble(carData.get("dailyRate"));
+        String image = carData.get("image");
+        
+        Car car = new Car(id, model, dailyRate);
+        if (image != null && !image.isEmpty()) {
+            car.setImage(image);
+        }
+        return carRepo.save(car);
     }
     
     @GetMapping("/customers")
@@ -34,13 +83,8 @@ public class RentalController {
         return custRepo.findAll();
     }
     
-    @PostMapping("/customers")
-    public Customer addCustomer(@RequestParam String id, @RequestParam String name, @RequestParam String phone) {
-        return custRepo.save(new Customer(id, name, phone));
-    }
-    
     @PostMapping("/rentals")
-    public Map<String, Object> rentCar(@RequestParam String customerId, @RequestParam String carId, @RequestParam int days) {
+    public Map<String, Object> rentCar(@RequestParam Long customerId, @RequestParam String carId, @RequestParam int days) {
         Map<String, Object> response = new HashMap<>();
         
         if (!custRepo.existsById(customerId)) {

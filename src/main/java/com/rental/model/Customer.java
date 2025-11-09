@@ -6,18 +6,26 @@ import jakarta.persistence.*;
 @Table(name = "customers")
 public class Customer {
     @Id
-    String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    
     String name;
     String phone;
+    String username;
+    String password; 
     
     public Customer() {}
-    public Customer(String id, String name, String phone) {
-        this.id = id;
+    
+    public Customer(String name, String phone, String username, String password) {
         this.name = name;
         this.phone = phone;
+        this.username = username;
+        this.password = password;
     }
     
-    public String getId() { return id; }
+    public Long getId() { return id; }
     public String getName() { return name; }
     public String getPhone() { return phone; }
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
 }
